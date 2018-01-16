@@ -5,17 +5,17 @@ import java.util.List;
 
 /**
  * A vertex of a LinkedListGraph.
- * @author sverdons
  */
 public class LinkedListVertex {
 
     private double x, y; // The coordinates of this vertex
-    LinkedListVertexEntry head; // Pointer to the first element in the double-linked adjacency list
-    int degree; // The degree of this vertex
+    private LinkedListVertexEntry head; // Pointer to the first element in the double-linked adjacency list
+    private int degree; // The degree of this vertex
 
     /**
-     * Creates a new LinkedListVertex with the given coordinates.
-     * Runs in O(1) time.
+     * Creates a new LinkedListVertex with the given coordinates. Runs in O(1)
+     * time.
+     *
      * @param x
      * @param y
      */
@@ -43,8 +43,18 @@ public class LinkedListVertex {
     }
 
     /**
-     * Returns the degree of this vertex.
-     * Runs in O(1) time.
+     * Returns the first element in the double-linked adjacency list of this
+     * vertex. Runs in O(1) time.
+     *
+     * @return
+     */
+    LinkedListVertexEntry getHead() {
+        return head;
+    }
+
+    /**
+     * Returns the degree of this vertex. Runs in O(1) time.
+     *
      * @return
      */
     public int getDegree() {
@@ -52,8 +62,10 @@ public class LinkedListVertex {
     }
 
     /**
-     * Returns true if this vertex has an outgoing or undirected edge to the given vertex, false otherwise.
-     * Runs in O(degree) time.
+     * Returns true if this vertex has an outgoing or undirected edge to the
+     * given vertex, false otherwise. Runs in O(degree) time.
+     *
+     * @param v
      * @return
      */
     public boolean isAdjacentTo(LinkedListVertex v) {
@@ -72,12 +84,13 @@ public class LinkedListVertex {
     }
 
     /**
-     * Returns a collection of all neighbours of this vertex.
-     * Runs in O(degree) time.
+     * Returns a collection of all neighbours of this vertex. Runs in O(degree)
+     * time.
+     *
      * @return
      */
     public List<LinkedListVertex> getNeighbours() {
-        ArrayList<LinkedListVertex> ns = new ArrayList<LinkedListVertex>(degree);
+        ArrayList<LinkedListVertex> ns = new ArrayList<>(degree);
 
         LinkedListVertexEntry e = head;
 
@@ -90,8 +103,9 @@ public class LinkedListVertex {
     }
 
     /**
-     * Adds a neighbour to the head of the neighbour list and returns the new entry.
-     * Runs in O(1) time.
+     * Adds a neighbour to the head of the neighbour list and returns the new
+     * entry. Runs in O(1) time.
+     *
      * @param v
      * @return
      */
@@ -108,7 +122,7 @@ public class LinkedListVertex {
         if (head != null) {
             head.prev = e;
         }
-        
+
         head = e;
 
         // Increment degree
@@ -117,27 +131,47 @@ public class LinkedListVertex {
         return e;
     }
 
+    /**
+     * Makes all undirected edges of this vertex outgoing by removing the
+     * corresponding entries from the adjacency lists of its neighbours. Runs in
+     * O(degree) time.
+     */
+    public void directEdgesOutward() {
+        LinkedListVertexEntry e = head;
+
+        while (e != null) {
+            if (e.twin != null) {
+                e.twin.myVertex.degree--;
+                e.twin.remove();
+            } else {
+                System.err.println("Twin was null");
+            }
+
+            e = e.next;
+        }
+    }
+
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";
     }
-}
 
-class LinkedListVertexEntry {
+    class LinkedListVertexEntry {
 
-    LinkedListVertexEntry prev, next;
-    LinkedListVertexEntry twin;
-    LinkedListVertex myVertex, neighbour;
+        LinkedListVertexEntry prev, next;
+        LinkedListVertexEntry twin;
+        LinkedListVertex myVertex, neighbour;
 
-    public void remove() {
-        if (prev == null) {
-            myVertex.head = next;
-        } else {
-            prev.next = next;
-        }
+        public void remove() {
+            if (prev == null) {
+                myVertex.head = next;
+            } else {
+                prev.next = next;
+            }
 
-        if (next != null) {
-            next.prev = prev;
+            if (next != null) {
+                next.prev = prev;
+            }
         }
     }
 }

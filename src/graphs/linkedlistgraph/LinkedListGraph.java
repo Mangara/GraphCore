@@ -7,23 +7,24 @@ import java.util.HashSet;
 import graphs.graph.Edge;
 import graphs.graph.Graph;
 import graphs.graph.GraphVertex;
+import graphs.linkedlistgraph.LinkedListVertex.LinkedListVertexEntry;
 import java.util.Map;
 
 /**
- * An adjacency-list representation of a graph. If an edge is undirected, its entries in the adjacency lists are linked to allow fast deletion.
- * @author Sander Verdonschot <sander.verdonschot at gmail.com>
+ * An adjacency-list representation of a graph. If an edge is undirected, its
+ * entries in the adjacency lists are linked to allow fast deletion.
  */
 public class LinkedListGraph {
 
-    private HashSet<LinkedListVertex> vertices;
+    private final HashSet<LinkedListVertex> vertices;
 
     public LinkedListGraph() {
-        vertices = new HashSet<LinkedListVertex>();
+        vertices = new HashSet<>();
     }
 
     public LinkedListGraph(Graph g) {
-        vertices = new HashSet<LinkedListVertex>(2 * g.getVertices().size());
-        HashMap<GraphVertex, LinkedListVertex> vMap = new HashMap<GraphVertex, LinkedListVertex>(2 * g.getVertices().size());
+        vertices = new HashSet<>(2 * g.getVertices().size());
+        HashMap<GraphVertex, LinkedListVertex> vMap = new HashMap<>(2 * g.getVertices().size());
 
         for (GraphVertex v : g.getVertices()) {
             LinkedListVertex lv = new LinkedListVertex(v.getX(), v.getY());
@@ -44,8 +45,9 @@ public class LinkedListGraph {
     }
 
     /**
-     * Adds the given vertex to the graph, with no adjacent edges.
-     * Runs in O(1) expected time.
+     * Adds the given vertex to the graph, with no adjacent edges. Runs in O(1)
+     * expected time.
+     *
      * @param v
      */
     public void addVertex(LinkedListVertex v) {
@@ -53,8 +55,9 @@ public class LinkedListGraph {
     }
 
     /**
-     * Adds an undirected edge between the given pair of vertices. The edge will be present in both adjacency lists.
-     * Runs in O(1) time.
+     * Adds an undirected edge between the given pair of vertices. The edge will
+     * be present in both adjacency lists. Runs in O(1) time.
+     *
      * @param a
      * @param b
      */
@@ -63,11 +66,13 @@ public class LinkedListGraph {
     }
 
     /**
-     * Adds an edge between the given pair of vertices.
-     * If the edge is directed, it will be present only in the adjacency list of a, otherwise it will be present in both adjacency lists.
-     * Runs in O(1) time.
+     * Adds an edge between the given pair of vertices. If the edge is directed,
+     * it will be present only in the adjacency list of a, otherwise it will be
+     * present in both adjacency lists. Runs in O(1) time.
+     *
      * @param a
      * @param b
+     * @param directed
      */
     public void addEdge(LinkedListVertex a, LinkedListVertex b, boolean directed) {
         if (directed) {
@@ -82,8 +87,9 @@ public class LinkedListGraph {
     }
 
     /**
-     * Returns true if there is an edge between a and b in any direction, false otherwise.
-     * Runs in O(degree of a + degree of b) time.
+     * Returns true if there is an edge between a and b in any direction, false
+     * otherwise. Runs in O(degree of a + degree of b) time.
+     *
      * @param a
      * @param b
      * @return
@@ -100,6 +106,7 @@ public class LinkedListGraph {
 
     /**
      * Returns a collection of all vertices in this graph. Runs in O(1) time.
+     *
      * @return
      */
     public Collection<LinkedListVertex> getVertices() {
@@ -107,44 +114,27 @@ public class LinkedListGraph {
     }
 
     /**
-     * Removes the given vertex and all its edges from the graph. Directed incoming edges will not be removed
-     * Runs in O(|adjacency list of v|) time.
+     * Removes the given vertex and all its edges from the graph. Directed
+     * incoming edges will not be removed Runs in O(degree of v) time.
+     *
      * @param v
      */
     public void removeVertex(LinkedListVertex v) {
         // Remove all edges to v
-        directEdgesOutward(v);
+        v.directEdgesOutward();
         vertices.remove(v);
     }
 
     /**
-     * Makes all undirected edges of this vertex outgoing by removing the corresponding entries from the adjacency lists of its neighbours.
-     * Runs in O(|adjacency list of v|) time.
-     * @param v
-     */
-    public void directEdgesOutward(LinkedListVertex v) {
-        LinkedListVertexEntry e = v.head;
-
-        while (e != null) {
-            if (e.twin != null) {
-                e.twin.myVertex.degree--;
-                e.twin.remove();
-            } else {
-                System.err.println("Twin was null");
-            }
-
-            e = e.next;
-        }
-    }
-
-    /**
-     * Converts this LinkedListGraph into a Graph.
-     * Runs in O(n + m) expected time, where n and m are the number of vertices and edges in this LinkedListGraph.
+     * Converts this LinkedListGraph into a Graph. Runs in O(n + m) expected
+     * time, where n and m are the number of vertices and edges in this
+     * LinkedListGraph.
+     *
      * @return
      */
     public Graph toGraph() {
         Graph g = new Graph();
-        HashMap<LinkedListVertex, GraphVertex> vMap = new HashMap<LinkedListVertex, GraphVertex>(2 * vertices.size());
+        HashMap<LinkedListVertex, GraphVertex> vMap = new HashMap<>(2 * vertices.size());
 
         for (LinkedListVertex v : vertices) {
             GraphVertex gv = new GraphVertex(v.getX(), v.getY());
@@ -152,11 +142,11 @@ public class LinkedListGraph {
             g.addVertex(gv);
         }
 
-        HashSet<LinkedListVertex> processed = new HashSet<LinkedListVertex>(2 * vertices.size());
+        HashSet<LinkedListVertex> processed = new HashSet<>(2 * vertices.size());
 
         for (LinkedListVertex v : vertices) {
             GraphVertex gv = vMap.get(v);
-            LinkedListVertexEntry e = v.head;
+            LinkedListVertexEntry e = v.getHead();
 
             while (e != null) {
                 GraphVertex nv = vMap.get(e.neighbour);
@@ -179,15 +169,18 @@ public class LinkedListGraph {
     }
 
     /**
-     * Converts the given Graph into a LinkedListGraph and returns the constructed LinkedListGraph and a mapping of vertices of the original Graph to the LinkedListGraph.\
-     * Runs in O(n + m) expected time, where n and m are the number of vertices and edges in the given Graph.
+     * Converts the given Graph into a LinkedListGraph and returns the
+     * constructed LinkedListGraph and a mapping of vertices of the original
+     * Graph to the LinkedListGraph. Runs in O(n + m) expected time, where n
+     * and m are the number of vertices and edges in the given Graph.
+     *
      * @param g
      * @return
      */
     public static Pair<LinkedListGraph, Map<GraphVertex, LinkedListVertex>> fromGraph(Graph g) {
         LinkedListGraph rg = new LinkedListGraph();
 
-        HashMap<GraphVertex, LinkedListVertex> vMap = new HashMap<GraphVertex, LinkedListVertex>(2 * g.getVertices().size());
+        HashMap<GraphVertex, LinkedListVertex> vMap = new HashMap<>(2 * g.getVertices().size());
 
         for (GraphVertex v : g.getVertices()) {
             LinkedListVertex rv = new LinkedListVertex(v.getX(), v.getY());
@@ -201,6 +194,6 @@ public class LinkedListGraph {
             rg.addEdge(a, b);
         }
 
-        return new Pair<LinkedListGraph, Map<GraphVertex, LinkedListVertex>>(rg, vMap);
+        return new Pair<>(rg, vMap);
     }
 }

@@ -6,15 +6,13 @@ import graphs.graph.Graph;
 import graphs.linkedlistgraph.LinkedListGraph;
 import graphs.linkedlistgraph.LinkedListVertex;
 
-/**
- *
- * @author Sander Verdonschot <sander.verdonschot at gmail.com>
- */
 public class Planar5Orienter {
 
     /**
-     * Pre-condition: g is planar, all edges in g are undirected (maybe not necessary?)
-     * Replaces each edge of g by a directed edge such that each vertex has outdegree at most 5.
+     * Pre-condition: g is planar, all edges in g are undirected (maybe not
+     * necessary?) Replaces each edge of g by a directed edge such that each
+     * vertex has out-degree at most 5.
+     *
      * @param g
      * @return
      */
@@ -25,14 +23,15 @@ public class Planar5Orienter {
     }
 
     /**
-     * Pre-condition: g is planar, all edges in g are undirected (maybe not necessary?)
-     * Replaces each edge of g by a directed edge such that each vertex has outdegree at most 5.
+     * Pre-condition: g is planar, all edges in g are undirected (maybe not
+     * necessary?) Replaces each edge of g by a directed edge such that each
+     * vertex has out-degree at most 5.
+     *
      * @param g
-     * @return
      */
     public static void orient(LinkedListGraph g) {
         // Add all vertices with degree 5 or less to the queue
-        Queue<LinkedListVertex> q = new LinkedList<LinkedListVertex>();
+        Queue<LinkedListVertex> q = new LinkedList<>();
 
         for (LinkedListVertex v : g.getVertices()) {
             if (v.getDegree() <= 5) {
@@ -51,7 +50,7 @@ public class Planar5Orienter {
             }
 
             // Remove the incoming edges of the processed vertex
-            g.directEdgesOutward(v);
+            v.directEdgesOutward();
         }
     }
 }
