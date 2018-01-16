@@ -4,7 +4,7 @@ A Java library with basic data structures and algorithms for graphs. Main featur
 
 ## Getting Started
 
-To use the library, download [GraphCore.jar](GraphCore.jar) and, optionally, [GraphCore-sources.jar](GraphCore-sources.jar).
+To use the library, download [GraphCore.jar](GraphCore-v1.0.jar) and, optionally, [GraphCore-sources.jar](GraphCore-v1.0-sources.jar).
 
 To build the project, open it with a recent version of [NetBeans](https://netbeans.org/).
 
