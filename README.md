@@ -1,5 +1,6 @@
 # GraphCore
 
+A Java library with basic data structures and algorithms for graphs.
 
 ## Getting Started
 
