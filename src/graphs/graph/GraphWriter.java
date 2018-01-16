@@ -29,7 +29,7 @@ public class GraphWriter {
             out.write("Edges");
             out.newLine();
 
-            out.write(edges.size());
+            out.write(Integer.toString(edges.size()));
             out.newLine();
 
             for (Edge edge : edges) {
