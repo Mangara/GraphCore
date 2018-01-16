@@ -1,19 +1,16 @@
 package graphs.graph;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 public class GraphWriter {
 
-    public static void writeGraph(File file, Graph graph) throws IOException {
-        BufferedWriter out = null;
-
-        try {
-            out = new BufferedWriter(new FileWriter(file));
-
+    public static void writeGraph(Path file, Graph graph) throws IOException {
+        try (BufferedWriter out = Files.newBufferedWriter(file, Charset.forName("UTF-8"))) {
             List<GraphVertex> vertices = graph.getVertices();
             List<Edge> edges = graph.getEdges();
 
@@ -41,10 +38,6 @@ public class GraphWriter {
                 out.write(" ");
                 out.write(Integer.toString(vertices.indexOf(edge.getVB())));
                 out.newLine();
-            }
-        } finally {
-            if (out != null) {
-                out.close();
             }
         }
     }

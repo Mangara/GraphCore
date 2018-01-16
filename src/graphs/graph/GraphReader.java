@@ -1,24 +1,18 @@
 package graphs.graph;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
-/**
- *
- * @author Sander Verdonschot <sander.verdonschot at gmail.com>
- */
 public class GraphReader {
 
-    public static Graph readGraph(File file) throws IOException {
-        BufferedReader in = null;
+    public static Graph readGraph(Path file) throws IOException {
         Graph graph = new Graph();
 
-        try {
-            in = new BufferedReader(new FileReader(file));
-
+        try (BufferedReader in = Files.newBufferedReader(file, Charset.forName("UTF-8"))) {
             // Read all vertices
             ArrayList<GraphVertex> vertices = readVertices(in);
 
@@ -29,10 +23,6 @@ public class GraphReader {
 
             // Read and add all edges
             readEdges(in, graph, vertices);
-        } finally {
-            if (in != null) {
-                in.close();
-            }
         }
 
         return graph;
