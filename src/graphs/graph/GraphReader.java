@@ -87,7 +87,13 @@ public class GraphReader {
         int i = 0;
 
         while (i < nEdges) {
-            line = in.readLine().trim();
+            line = in.readLine();
+            
+            if (line == null) {
+                throw new IOException("Incorrect file format: Fewer edges than specified.");
+            }
+            
+            line = line.trim();
 
             // Skip blank lines
             if (line.length() > 0) {
@@ -98,6 +104,7 @@ public class GraphReader {
                 int v2 = Integer.parseInt(parts[1]);
 
                 graph.addEdge(vertices.get(v1), vertices.get(v2));
+                i++;
             }
         }
     }
